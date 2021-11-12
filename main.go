@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func factoriel(n int) int {
+func factorial_recursive(n int) int {
 	if n < 0 {
 		// Invalid
 		return -1
@@ -16,7 +16,21 @@ func factoriel(n int) int {
 		return 1
 	}
 
-	return n * factoriel(n-1)
+	return n * factorial(n-1)
+}
+
+func factorial_iter(n int) int {
+	r := 1
+
+	for i := 1; i <= n; i++ {
+		r = r * i
+	}
+
+	return r
+}
+
+func factorial(n int) int {
+	return factorial_iter(n)
 }
 
 func main() {
@@ -37,7 +51,7 @@ func main() {
 			return
 		}
 
-		res := factoriel(n)
+		res := factorial(n)
 
 		json.NewEncoder(w).Encode(map[string]int{
 			"result": res,
