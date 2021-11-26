@@ -63,6 +63,10 @@ func main() {
 		})
 	})
 
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "It works")
+	})
+
 	fmt.Printf("Listening on :8080")
 	http.ListenAndServe(":8080", nil)
 }
