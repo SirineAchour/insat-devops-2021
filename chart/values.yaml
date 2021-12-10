@@ -1,0 +1,2 @@
+name: "fact-application"
+containerPort: 8080
