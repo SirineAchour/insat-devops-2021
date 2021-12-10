@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fact-deployment
+  labels:
+    app: fact
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fact
+  template:
+    metadata:
+      labels:
+        app: fact
+    spec:
+      containers:
+      - name: nginx
+        image: segflow/exampleimage:sha-6cdf826
+        ports:
+        - containerPort: 8080
