@@ -6,6 +6,7 @@ metadata:
     app: fact
 spec:
   replicas: 1
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app: fact
