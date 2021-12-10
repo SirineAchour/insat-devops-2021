@@ -15,7 +15,7 @@ spec:
         app: fact
     spec:
       containers:
-      - name: nginx
+      - name: {{ .Values.containerName | default "exampleimage" }}
         image: segflow/exampleimage:sha-6cdf826
         ports:
         - containerPort: {{ .Values.containerPort | default 8080 }}
