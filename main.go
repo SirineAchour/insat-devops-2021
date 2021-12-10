@@ -4,8 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
+
+var factTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+	Name: "fact_total",
+	Help: "A counter blablbal",
+}, []string{"parity"})
 
 func factorial_recursive(n int) int {
 	if n < 0 {
@@ -40,6 +50,7 @@ func factorial(n int) int {
 
 func main() {
 	http.HandleFunc("/fact", func(w http.ResponseWriter, r *http.Request) {
+
 		ns := r.URL.Query().Get("n")
 		if ns == "" {
 			http.Error(w, "please enter n", 400)
@@ -49,6 +60,16 @@ func main() {
 		n, err := strconv.Atoi(ns)
 		if err != nil {
 			http.Error(w, "not a valid number", 400)
+		}
+
+		if n%2 == 0 {
+			factTotal.With(prometheus.Labels{
+				"parity": "even",
+			}).Inc()
+		} else {
+			factTotal.With(prometheus.Labels{
+				"parity": "odd",
+			}).Inc()
 		}
 
 		if n < 0 {
@@ -66,7 +87,13 @@ func main() {
 	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "It works")
 	})
+	http.Handle("/metrics", promhttp.Handler())
+
+	addr := ":8080"
+	if os.Getenv("ADDR") != "" {
+		addr = os.Getenv("ADDR")
+	}
 
 	fmt.Printf("Listening on :8080")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(addr, nil)
 }
